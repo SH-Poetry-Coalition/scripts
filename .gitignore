@@ -1,5 +1,8 @@
 *.txt
-demo
 *.docx
 *.exe
 edit_doc.go
+poems
+poems_anonymous
+poems_original
+poems_reversed

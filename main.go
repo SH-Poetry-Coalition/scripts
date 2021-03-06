@@ -3,30 +3,24 @@ package main
 import (
 	"fmt"
 	"os"
-	"path"
-	"strings"
+	"scripts/util"
 )
 
 func main() {
-	baseAddr := "."
-	var poems []string
-	files, _ := os.ReadDir(baseAddr)
-	for _, v := range files {
-		if path.Ext(v.Name()) == ".txt" {
-			poems = append(poems, v.Name())
-		}
-	}
-	fmt.Println(poems)
-
-	for _, v := range poems {
-		attributes := strings.Split(v, "-")
-		typ := attributes[0]
-		school := attributes[1]
-		author := attributes[2]
-		name := attributes[3][0 : len(attributes[3])-4]
-		fmt.Println(typ, school, author, name)
-		dstAddr := baseAddr + "/" + typ + "/" + school + "/" + author
-		os.MkdirAll(dstAddr, 0766)
-		os.Rename(baseAddr+"/"+v, dstAddr+"/"+v)
+	// util.Archive()
+	switch os.Args[1] {
+	case "archive":
+		poems := util.ReadPoems("./poems_original")
+		util.Archive("./poems_original", "./poems", poems)
+	case "anonymize":
+		poems := util.ReadPoems("./poems_original")
+		correspondence, reverseCorrespondence := util.GenCorrespondence("./poems_original", poems)
+		util.WriteCorrespondence(correspondence, reverseCorrespondence)
+		util.Anonymize("./poems_original", "./poems_anonymous", correspondence)
+	case "reverse":
+		reverseCorrespondence := util.ReadCorrespondence("reverse_correspondence.txt")
+		util.Reverse("./poems_anonymous", "./poems_reversed", reverseCorrespondence)
+	default:
+		fmt.Println("Expected 'archive' or 'anonymize' subcommands!")
 	}
 }
