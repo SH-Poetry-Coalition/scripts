@@ -2,6 +2,7 @@ package util
 
 import (
 	"os"
+	"strings"
 )
 
 func GenCorrespondence(baseAddr string, poems []string) (map[string]string, map[string]string) {
@@ -9,7 +10,15 @@ func GenCorrespondence(baseAddr string, poems []string) (map[string]string, map[
 	correspondence := make(map[string]string)
 	reverseCorrespondence := make(map[string]string)
 	for _, v := range poems {
-		anonymousName := Hash(v) + ".txt"
+		//fmt.Println(v)
+		attributes := strings.Split(v, "-")
+		typ := attributes[0]
+		anonymousName := ""
+		if typ == "新诗" {
+			anonymousName = "新" + Hash(v) + ".txt"
+		} else if typ == "古诗" {
+			anonymousName = "古" + Hash(v) + ".txt"
+		}
 		correspondence[v] = anonymousName
 		reverseCorrespondence[anonymousName] = v
 	}
